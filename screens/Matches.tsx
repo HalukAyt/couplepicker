@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import useLocal from '../store/useLocal';
 import { MOVIES } from '../data/movies';
 import { rankMatches, weightedPick, type Prefs } from '../lib/rank';
+import { scheduleMovieReminder, getTonightAt } from '../lib/notify';
 
 export default function Matches({ navigation }: any) {
   const [likesA] = useLocal<string[]>('likesA', []);
@@ -30,6 +31,12 @@ export default function Matches({ navigation }: any) {
     navigation.navigate('Home');
   };
 
+  const handleReminder = async (movieTitle: string) => {
+    const when = getTonightAt(21, 0); // bugün 21:00 (geçtiyse yarın)
+    await scheduleMovieReminder(movieTitle, when);
+    Alert.alert('Hatırlatma ayarlandı', `${movieTitle} için bildirim gönderilecek.`);
+  };
+
   if (ranked.length === 0) {
     return (
       <View style={{ padding: 16 }}>
@@ -52,6 +59,7 @@ export default function Matches({ navigation }: any) {
     <ScrollView contentContainerStyle={{ padding: 16 }}>
       <Text style={styles.title}>Eşleşmeler ({ranked.length})</Text>
       <View style={{ height: 8 }} />
+
       {ranked.map(m => (
         <View key={m.id} style={styles.card}>
           <Image source={{ uri: m.poster }} style={styles.poster} />
@@ -61,6 +69,8 @@ export default function Matches({ navigation }: any) {
               {m.genres.join(' • ')} | {m.platforms.join(' • ')} • {m.minutes} dk
             </Text>
             <Text style={styles.score}>Skor: {m.score.toFixed(1)}</Text>
+            <View style={{ height: 6 }} />
+            <Button title="⏰ Bu akşam 21:00'de hatırlat" onPress={() => handleReminder(m.title)} />
           </View>
         </View>
       ))}

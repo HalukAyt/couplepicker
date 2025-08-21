@@ -13,9 +13,19 @@
       "backgroundColor": "#ffffff",
       "jsEngine": "hermes"
     },
+    
     "ios": {
       "supportsTablet": true
     },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "mode": "production"
+        }
+      ]
+    ],
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",

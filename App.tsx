@@ -4,6 +4,8 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Home from './screens/Home';
 import Swipe from './screens/Swipe';
 import Matches from './screens/Matches';
+import { useEffect } from 'react';
+import { ensureNotificationPermission } from './lib/notify';
 
 export type RootStackParamList = {
   Home: undefined;
@@ -14,6 +16,12 @@ export type RootStackParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
+
+useEffect(() => {
+  ensureNotificationPermission().catch(err => console.warn(err));
+}, []);
+
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}> 
       <NavigationContainer>
